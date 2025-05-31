@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
-import 'package:google_fonts/google_fonts.dart';
+//import 'package:google_fonts/google_fonts.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'owner_dashboard_screen.dart';
 import 'home_screen.dart';
@@ -66,11 +66,11 @@ class _AuthScreenState extends State<AuthScreen> {
       children: [
         Text(
           'Choose Account Type',
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.black87,
-          ),
+          // style: GoogleFonts.poppins(
+          //   fontSize: 16,
+          //   fontWeight: FontWeight.w500,
+          //   color: Colors.black87,
+          // ),
         ),
         const SizedBox(height: 12),
         Row(
@@ -247,11 +247,11 @@ class _AuthScreenState extends State<AuthScreen> {
                 _authMode == AuthMode.email
                     ? (_isCreatingAccount ? 'Create Account' : 'Sign in')
                     : 'Sign in with Google',
-                style: GoogleFonts.poppins(
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
+                // style: GoogleFonts.poppins(
+                //   fontSize: 34,
+                //   fontWeight: FontWeight.bold,
+                //   color: Colors.black87,
+                // ),
               ),
               if (_authMode == AuthMode.email)
                 Row(

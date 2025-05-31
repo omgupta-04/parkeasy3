@@ -55,12 +55,16 @@ dependencies:
   shared_preferences:
   showcaseview:
   app_settings:
-  fl_chart: 
+  fl_chart:
+  porcupine_flutter:
+  permission_handler:
+  dialogflow_flutter:
+  speech_to_text:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  google_fonts: ^6.1.0
+  #google_fonts: 4.0.4
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -86,7 +90,8 @@ flutter:
     - assets/images/profile_default.jpg
     - assets/images/dummylot.jpg
     - assets/images/blank_dp.png
-  #   - images/a_dot_ham.jpeg
+    - assets/voice_model/hey_park_easy.ppn
+    - assets/voice_model/your_file.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

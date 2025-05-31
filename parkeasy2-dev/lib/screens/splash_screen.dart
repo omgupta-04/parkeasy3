@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+//import 'package:google_fonts/google_fonts.dart';
 import 'auth_screen.dart';
 import '../utils/helpers.dart';
 
@@ -48,19 +48,19 @@ class _SplashScreenState extends State<SplashScreen> {
                 const SizedBox(height: 24),
                 Text(
                   'SmartPark',
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  // style: GoogleFonts.poppins(
+                  //   color: Colors.white,
+                  //   fontSize: 28,
+                  //   fontWeight: FontWeight.bold,
+                  // ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Smart Parking, Simplified',
-                  style: GoogleFonts.poppins(
-                    color: Colors.white70,
-                    fontSize: 16,
-                  ),
+                  // style: GoogleFonts.poppins(
+                  //   color: Colors.white70,
+                  //   fontSize: 16,
+                  // ),
                 ),
               ],
             ),

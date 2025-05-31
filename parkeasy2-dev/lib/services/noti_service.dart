@@ -52,7 +52,7 @@ class NotiService {
     final now = tz.TZDateTime.now(tz.local);
     var scheduleDate = tz.TZDateTime(tz.local,now.year,now.month,now.day,hour,min);
     print(scheduleDate);
-    await notificationPlugin.zonedSchedule(id, title, body, scheduleDate, notificationDetails(), androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
+    await notificationPlugin.zonedSchedule(id, title, body, scheduleDate, notificationDetails(), androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle, uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime);
     print('Scheduled Success');
   }
 

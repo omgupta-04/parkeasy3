@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:parkeasy2/providers/speech_provider.dart';
+import 'package:parkeasy2/widgets/voice_command_listner.dart';
+import 'package:provider/provider.dart';
 import 'screens/auth_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/owner_dashboard_screen.dart';
@@ -8,10 +11,13 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => SpeechProvider())],
+      child: MyApp(),
+    ),
   );
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -23,7 +29,7 @@ class MyApp extends StatelessWidget {
       title: 'ParkEasy',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: const AuthGate(),
+      home: VoiceCommandListener(child: const AuthGate()),
     );
   }
 }
@@ -57,4 +63,5 @@ class AuthGate extends StatelessWidget {
     );
   }
 }
- //hello 
+
+//hello
