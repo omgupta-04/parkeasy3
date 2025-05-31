@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../services/image_picker_helper.dart';
+import 'auth_screen.dart';
 
 class OwnerProfileScreen extends StatefulWidget {
   const OwnerProfileScreen({super.key});
@@ -105,6 +107,17 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
     );
   }
 
+  Future<void> _logout() async {
+    await FirebaseAuth.instance.signOut();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('role');
+    if (!mounted) return;
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => AuthScreen()),
+      (Route<dynamic> route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,6 +128,10 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
           IconButton(
             icon: Icon(_isEditing ? Icons.save : Icons.edit),
             onPressed: _toggleEditing,
+          ),
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: _logout,
           ),
         ],
       ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'screens/auth_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/owner_dashboard_screen.dart';
@@ -19,11 +21,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ParkEasy',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const AuthGate(),
+    // If you don't use showcaseview, you can remove ShowCaseWidget below
+    return ShowCaseWidget(
+      builder: (context) => MaterialApp(
+        title: 'ParkEasy',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(primarySwatch: Colors.blue),
+        home: const AuthGate(),
+      ),
     );
   }
 }
@@ -31,30 +36,41 @@ class MyApp extends StatelessWidget {
 class AuthGate extends StatelessWidget {
   const AuthGate({Key? key}) : super(key: key);
 
+  Future<String?> _getRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('role'); // 'owner' or 'user'
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        // Show loading indicator while checking auth state
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
-        // If user is logged in, show dashboard or home
         if (snapshot.hasData) {
-          // TODO: Replace this logic with your role check if needed
-          // For demonstration, always show OwnerDashboardScreen
-          return OwnerDashboardScreen();
-          // Example for user role:
-          // if (isOwner(snapshot.data!)) return OwnerDashboardScreen();
-          // else return HomeScreen();
+          return FutureBuilder<String?>(
+            future: _getRole(),
+            builder: (context, roleSnapshot) {
+              if (roleSnapshot.connectionState == ConnectionState.waiting) {
+                return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              }
+              final role = roleSnapshot.data;
+              final email = snapshot.data!.email ?? '';
+              if (role == 'owner') {
+                return OwnerDashboardScreen();
+              }
+              return HomeScreen(email: email);
+            },
+          );
         }
-        // If not logged in, show login/auth screen
         return AuthScreen();
       },
     );
   }
 }
- //hello 

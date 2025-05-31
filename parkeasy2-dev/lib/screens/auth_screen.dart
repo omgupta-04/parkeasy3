@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'owner_dashboard_screen.dart';
 import 'home_screen.dart';
 
@@ -119,6 +120,11 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  Future<void> _saveRoleToPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('role', _selectedUserType);
+  }
+
   Future<void> _signInWithEmail() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
@@ -151,6 +157,9 @@ class _AuthScreenState extends State<AuthScreen> {
           password: password,
         );
       }
+
+      // Save role to SharedPreferences
+      await _saveRoleToPrefs();
 
       // Navigate based on user type
       if (_selectedUserType == 'owner') {
@@ -204,6 +213,10 @@ class _AuthScreenState extends State<AuthScreen> {
         );
         userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
       }
+
+      // Save role to SharedPreferences
+      await _saveRoleToPrefs();
+
       // Navigate based on user type
       if (_selectedUserType == 'owner') {
         Navigator.pushReplacement(

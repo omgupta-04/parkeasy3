@@ -315,13 +315,23 @@ class _HomeScreenState extends State<HomeScreen> {
             ListTile(
               leading: Icon(Icons.logout),
               title: Text("Logout"),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => AuthScreen()),
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.remove('role');
+                if (!context.mounted) return;
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => AuthScreen()),
+                  (route) => false,
                 );
               },
             ),
+            Spacer(),
+            Text(
+              "Version 1.0.0",
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+            ),
+
           ],
         ),
       ),

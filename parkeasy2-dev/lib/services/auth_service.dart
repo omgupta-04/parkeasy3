@@ -1,17 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // Google Sign-In
-  Future<UserCredential?> signInWithGoogle() async {
+  Future<UserCredential?> signInWithGoogle({required String role}) async {
     try {
+      UserCredential? userCredential;
       if (kIsWeb) {
         GoogleAuthProvider googleProvider = GoogleAuthProvider();
         googleProvider.addScope('email');
-        return await _auth.signInWithPopup(googleProvider);
+        userCredential = await _auth.signInWithPopup(googleProvider);
       } else {
         final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
         if (googleUser == null) return null;
@@ -20,10 +22,35 @@ class AuthService {
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
-        return await _auth.signInWithCredential(credential);
+        userCredential = await _auth.signInWithCredential(credential);
       }
+      // Save role in SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('role', role); // role should be 'owner' or 'user'
+      return userCredential;
     } catch (e) {
       print('Google Sign-In Error: $e');
+      return null;
+    }
+  }
+
+  // Email/Password Sign-In
+  Future<UserCredential?> signInWithEmailAndPassword({
+    required String email,
+    required String password,
+    required String role,
+  }) async {
+    try {
+      final userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      // Save role in SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('role', role); // role should be 'owner' or 'user'
+      return userCredential;
+    } catch (e) {
+      print('Email/Password Sign-In Error: $e');
       return null;
     }
   }
@@ -34,6 +61,8 @@ class AuthService {
     if (!kIsWeb) {
       await GoogleSignIn().signOut();
     }
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('role');
   }
 
   // Current user
