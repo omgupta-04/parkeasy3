@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/slot_provider.dart';
+import '../../providers/slot_provider.dart';
 
 class SlotAnalyticsScreen extends StatefulWidget {
   const SlotAnalyticsScreen({super.key});
@@ -86,16 +86,17 @@ class _SlotAnalyticsScreenState extends State<SlotAnalyticsScreen> {
                     _currentPage = index;
                   });
                 },
-                itemBuilder: (context, index) => Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    image: DecorationImage(
-                      image: AssetImage(imagePaths[index]),
-                      fit: BoxFit.cover,
+                itemBuilder:
+                    (context, index) => Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 6),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        image: DecorationImage(
+                          image: AssetImage(imagePaths[index]),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
               ),
             ),
             const SizedBox(height: 10),
@@ -130,9 +131,15 @@ class _SlotAnalyticsScreenState extends State<SlotAnalyticsScreen> {
                   const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Average Rating', style: TextStyle(fontWeight: FontWeight.w600)),
+                      Text(
+                        'Average Rating',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
                       SizedBox(height: 8),
-                      Text('Booking Frequency', style: TextStyle(fontWeight: FontWeight.w600)),
+                      Text(
+                        'Booking Frequency',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
                     ],
                   ),
                   Column(
@@ -167,10 +174,7 @@ class _SlotAnalyticsScreenState extends State<SlotAnalyticsScreen> {
               children: [
                 const Text(
                   'Slot Statistics',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
@@ -210,14 +214,16 @@ class _SlotAnalyticsScreenState extends State<SlotAnalyticsScreen> {
             const SizedBox(height: 12),
 
             ...slotData.userFeedbacks.map(
-                  (feedback) => Padding(
+              (feedback) => Padding(
                 padding: const EdgeInsets.only(bottom: 12.0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const CircleAvatar(
                       radius: 18,
-                      backgroundImage: AssetImage('assets/images/profile_default.jpg'),
+                      backgroundImage: AssetImage(
+                        'assets/images/profile_default.jpg',
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -251,11 +257,8 @@ class LineChartWidget extends StatelessWidget {
   final List<FlSpot> data;
   final String title;
 
-  const LineChartWidget({
-    Key? key,
-    required this.data,
-    required this.title,
-  }) : super(key: key);
+  const LineChartWidget({Key? key, required this.data, required this.title})
+    : super(key: key);
 
   String _bottomTitle(double value) {
     if (title == "Monthly Parking") {
@@ -294,9 +297,10 @@ class LineChartWidget extends StatelessWidget {
       bottomInterval = 1;
     }
 
-    double maxY = data.isNotEmpty
-        ? data.map((e) => e.y).reduce((a, b) => a > b ? a : b)
-        : 0;
+    double maxY =
+        data.isNotEmpty
+            ? data.map((e) => e.y).reduce((a, b) => a > b ? a : b)
+            : 0;
 
     return Card(
       elevation: 3,
@@ -307,10 +311,7 @@ class LineChartWidget extends StatelessWidget {
           children: [
             Text(
               title,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
             const SizedBox(height: 12),
             Expanded(

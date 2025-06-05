@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/parking_space_model.dart';
-import '../services/parking_service.dart';
+import '../../models/parking_space_model.dart';
+import '../../services/parking_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class BookingTimerScreen extends StatefulWidget {
@@ -32,7 +32,10 @@ class _BookingTimerScreenState extends State<BookingTimerScreen> {
           comment: result['comment'],
           date: DateTime.now(),
         );
-        await _parkingService.addReviewToParkingSpace(widget.parkingSpaceId, review);
+        await _parkingService.addReviewToParkingSpace(
+          widget.parkingSpaceId,
+          review,
+        );
       }
     }
     // ...rest of end parking logic (navigate, show message, etc.)...
@@ -96,10 +99,11 @@ class _ReviewDialogState extends State<ReviewDialog> {
           child: Text('Cancel'),
         ),
         ElevatedButton(
-          onPressed: () => Navigator.pop(context, {
-            'rating': _rating,
-            'comment': _controller.text,
-          }),
+          onPressed:
+              () => Navigator.pop(context, {
+                'rating': _rating,
+                'comment': _controller.text,
+              }),
           child: Text('Submit'),
         ),
       ],

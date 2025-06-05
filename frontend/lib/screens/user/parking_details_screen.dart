@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
-import '../models/parking_space_model.dart';
-import '../models/booking_model.dart';
-import '../services/parking_service.dart';
+import '../../models/parking_space_model.dart';
+import '../../models/booking_model.dart';
+import '../../services/parking_service.dart';
 
 class ParkingDetailsScreen extends StatefulWidget {
   final ParkingSpace parkingSpace;
@@ -27,17 +27,22 @@ class _ParkingDetailsScreenState extends State<ParkingDetailsScreen> {
   int _selectedHours = 1;
 
   double calculateDistanceKm(
-      double userLat, double userLng, double destLat, double destLng) {
-    return Geolocator.distanceBetween(userLat, userLng, destLat, destLng) / 1000.0;
+    double userLat,
+    double userLng,
+    double destLat,
+    double destLng,
+  ) {
+    return Geolocator.distanceBetween(userLat, userLng, destLat, destLng) /
+        1000.0;
   }
 
   Future<void> _bookParking() async {
     setState(() => _isBooking = true);
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('You must be logged in to book.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('You must be logged in to book.')));
       setState(() => _isBooking = false);
       return;
     }
@@ -92,23 +97,32 @@ class _ParkingDetailsScreenState extends State<ParkingDetailsScreen> {
           children: [
             parkingSpace.photoUrl.isNotEmpty
                 ? Image.network(
-                    parkingSpace.photoUrl,
-                    width: double.infinity,
-                    height: 200,
-                    fit: BoxFit.cover,
-                  )
+                  parkingSpace.photoUrl,
+                  width: double.infinity,
+                  height: 200,
+                  fit: BoxFit.cover,
+                )
                 : Container(
-                    width: double.infinity,
-                    height: 200,
-                    color: Colors.grey[300],
-                    child: Icon(Icons.local_parking, size: 80, color: Colors.grey[700]),
+                  width: double.infinity,
+                  height: 200,
+                  color: Colors.grey[300],
+                  child: Icon(
+                    Icons.local_parking,
+                    size: 80,
+                    color: Colors.grey[700],
                   ),
+                ),
             const SizedBox(height: 16),
             Row(
               children: [
                 Icon(
-                  parkingSpace.availableSpots > 0 ? Icons.circle : Icons.circle_outlined,
-                  color: parkingSpace.availableSpots > 0 ? Colors.green : Colors.red,
+                  parkingSpace.availableSpots > 0
+                      ? Icons.circle
+                      : Icons.circle_outlined,
+                  color:
+                      parkingSpace.availableSpots > 0
+                          ? Colors.green
+                          : Colors.red,
                   size: 14,
                 ),
                 const SizedBox(width: 8),
@@ -116,7 +130,10 @@ class _ParkingDetailsScreenState extends State<ParkingDetailsScreen> {
                   parkingSpace.availableSpots > 0 ? "Empty" : "Full",
                   style: TextStyle(
                     fontSize: 16,
-                    color: parkingSpace.availableSpots > 0 ? Colors.green : Colors.red,
+                    color:
+                        parkingSpace.availableSpots > 0
+                            ? Colors.green
+                            : Colors.red,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -126,22 +143,33 @@ class _ParkingDetailsScreenState extends State<ParkingDetailsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _InfoIcon(icon: Icons.attach_money, label: '${parkingSpace.pricePerHour} Rs/hr'),
-                _InfoIcon(icon: Icons.location_on, label: '${distanceKm.toStringAsFixed(2)} km'),
+                _InfoIcon(
+                  icon: Icons.attach_money,
+                  label: '${parkingSpace.pricePerHour} Rs/hr',
+                ),
+                _InfoIcon(
+                  icon: Icons.location_on,
+                  label: '${distanceKm.toStringAsFixed(2)} km',
+                ),
                 FutureBuilder<List<Review>>(
-                  future: _parkingService.getReviewsForParkingSpace(parkingSpace.id),
+                  future: _parkingService.getReviewsForParkingSpace(
+                    parkingSpace.id,
+                  ),
                   builder: (context, snapshot) {
                     double avgRating = 0.0;
                     if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                      avgRating = snapshot.data!
-                          .map((r) => r.rating)
-                          .reduce((a, b) => a + b) / snapshot.data!.length;
+                      avgRating =
+                          snapshot.data!
+                              .map((r) => r.rating)
+                              .reduce((a, b) => a + b) /
+                          snapshot.data!.length;
                     }
                     return _InfoIcon(
                       icon: Icons.star,
-                      label: snapshot.hasData && snapshot.data!.isNotEmpty
-                          ? '${avgRating.toStringAsFixed(1)} ⭐'
-                          : '0.0 ⭐',
+                      label:
+                          snapshot.hasData && snapshot.data!.isNotEmpty
+                              ? '${avgRating.toStringAsFixed(1)} ⭐'
+                              : '0.0 ⭐',
                     );
                   },
                 ),
@@ -150,41 +178,54 @@ class _ParkingDetailsScreenState extends State<ParkingDetailsScreen> {
             const SizedBox(height: 24),
 
             // --- PAYMENT/TIMER/BOOKING SECTION ---
-            Text("Select Duration (hours):", style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              "Select Duration (hours):",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             SizedBox(height: 8),
             DropdownButton<int>(
               value: _selectedHours,
-              items: List.generate(12, (i) => i + 1)
-                  .map((h) => DropdownMenuItem(value: h, child: Text('$h')))
-                  .toList(),
+              items:
+                  List.generate(12, (i) => i + 1)
+                      .map((h) => DropdownMenuItem(value: h, child: Text('$h')))
+                      .toList(),
               onChanged: (val) => setState(() => _selectedHours = val ?? 1),
             ),
             const SizedBox(height: 24),
             _isBooking
                 ? Center(child: CircularProgressIndicator())
                 : ElevatedButton.icon(
-                    onPressed: _bookParking,
-                    icon: Icon(Icons.check_circle),
-                    label: Text("Book Now for ₹${(parkingSpace.pricePerHour * _selectedHours).toStringAsFixed(2)}"),
+                  onPressed: _bookParking,
+                  icon: Icon(Icons.check_circle),
+                  label: Text(
+                    "Book Now for ₹${(parkingSpace.pricePerHour * _selectedHours).toStringAsFixed(2)}",
                   ),
+                ),
             const SizedBox(height: 24),
 
             // --- USER REVIEW STAR ROW ---
             FutureBuilder<List<Review>>(
-              future: _parkingService.getReviewsForParkingSpace(parkingSpace.id),
+              future: _parkingService.getReviewsForParkingSpace(
+                parkingSpace.id,
+              ),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
                 final reviews = snapshot.data ?? [];
-                final avgRating = reviews.isEmpty
-                    ? 0.0
-                    : reviews.map((r) => r.rating).reduce((a, b) => a + b) / reviews.length;
+                final avgRating =
+                    reviews.isEmpty
+                        ? 0.0
+                        : reviews.map((r) => r.rating).reduce((a, b) => a + b) /
+                            reviews.length;
                 return Row(
                   children: [
                     Text(
                       "User Rating: ",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     ...List.generate(
                       5,
@@ -210,7 +251,9 @@ class _ParkingDetailsScreenState extends State<ParkingDetailsScreen> {
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             FutureBuilder<List<Review>>(
-              future: _parkingService.getReviewsForParkingSpace(parkingSpace.id),
+              future: _parkingService.getReviewsForParkingSpace(
+                parkingSpace.id,
+              ),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -220,16 +263,25 @@ class _ParkingDetailsScreenState extends State<ParkingDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (reviews.isEmpty)
-                      Text('No reviews yet.', style: TextStyle(color: Colors.grey)),
-                    ...reviews.map((review) => ListTile(
-                          title: Text(review.userName),
-                          subtitle: Text(review.comment),
-                          trailing: Text('${review.rating} ⭐'),
-                        )),
+                      Text(
+                        'No reviews yet.',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ...reviews.map(
+                      (review) => ListTile(
+                        title: Text(review.userName),
+                        subtitle: Text(review.comment),
+                        trailing: Text('${review.rating} ⭐'),
+                      ),
+                    ),
                     FutureBuilder<bool>(
-                      future: _parkingService.hasUserReviewed(parkingSpace.id, userId),
+                      future: _parkingService.hasUserReviewed(
+                        parkingSpace.id,
+                        userId,
+                      ),
                       builder: (context, userReviewedSnapshot) {
-                        if (userReviewedSnapshot.connectionState == ConnectionState.waiting) {
+                        if (userReviewedSnapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return SizedBox.shrink();
                         }
                         if (userReviewedSnapshot.data == false) {
@@ -237,7 +289,9 @@ class _ParkingDetailsScreenState extends State<ParkingDetailsScreen> {
                           String comment = '';
                           return ElevatedButton(
                             onPressed: () async {
-                              final result = await showDialog<Map<String, dynamic>>(
+                              final result = await showDialog<
+                                Map<String, dynamic>
+                              >(
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
@@ -263,21 +317,25 @@ class _ParkingDetailsScreenState extends State<ParkingDetailsScreen> {
                                           },
                                         ),
                                         TextField(
-                                          decoration: InputDecoration(labelText: 'Comment'),
+                                          decoration: InputDecoration(
+                                            labelText: 'Comment',
+                                          ),
                                           onChanged: (val) => comment = val,
                                         ),
                                       ],
                                     ),
                                     actions: [
                                       TextButton(
-                                        onPressed: () => Navigator.pop(context, null),
+                                        onPressed:
+                                            () => Navigator.pop(context, null),
                                         child: Text('Cancel'),
                                       ),
                                       TextButton(
-                                        onPressed: () => Navigator.pop(context, {
-                                          'rating': tempRating,
-                                          'comment': comment,
-                                        }),
+                                        onPressed:
+                                            () => Navigator.pop(context, {
+                                              'rating': tempRating,
+                                              'comment': comment,
+                                            }),
                                         child: Text('Submit'),
                                       ),
                                     ],

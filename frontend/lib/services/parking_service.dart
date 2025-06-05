@@ -35,7 +35,10 @@ class ParkingService {
 
   // Real-time updates for owner's parking spaces
   Stream<List<ParkingSpace>> getParkingSpacesByOwnerStream(String ownerId) {
-    final ref = _db.child('parking_spaces').orderByChild('ownerId').equalTo(ownerId);
+    final ref = _db
+        .child('parking_spaces')
+        .orderByChild('ownerId')
+        .equalTo(ownerId);
     return ref.onValue.map((event) {
       if (event.snapshot.value == null) return [];
       final data = Map<String, dynamic>.from(event.snapshot.value as Map);
@@ -46,7 +49,6 @@ class ParkingService {
       }).toList();
     });
   }
-
 
   // Get bookings by user
   Future<List<Booking>> getBookingsByUser(String userId) async {
@@ -76,6 +78,7 @@ class ParkingService {
     required double latitude,
     required double longitude,
     required String upiId,
+    required String photoUrl,
   }) async {
     final newRef = _db.child('parking_spaces').push();
     await newRef.set({
@@ -86,7 +89,7 @@ class ParkingService {
       'availableSpots': availableSpots,
       'latitude': latitude,
       'longitude': longitude,
-      'photoUrl': '',
+      'photoUrl': photoUrl,
       'upiId': upiId,
       'reviews': [],
     });
@@ -123,13 +126,18 @@ class ParkingService {
     if (!snapshot.exists) return [];
     final reviews = <Review>[];
     for (final child in snapshot.children) {
-      reviews.add(Review.fromMap(Map<String, dynamic>.from(child.value as Map)));
+      reviews.add(
+        Review.fromMap(Map<String, dynamic>.from(child.value as Map)),
+      );
     }
     return reviews;
   }
 
   // Add a review to a parking space
-  Future<void> addReviewToParkingSpace(String parkingSpaceId, Review review) async {
+  Future<void> addReviewToParkingSpace(
+    String parkingSpaceId,
+    Review review,
+  ) async {
     final ref = _db.child('parking_spaces/$parkingSpaceId/reviews').push();
     await ref.set(review.toMap());
   }
@@ -140,7 +148,9 @@ class ParkingService {
     final snapshot = await ref.get();
     if (!snapshot.exists) return false;
     for (final child in snapshot.children) {
-      final review = Review.fromMap(Map<String, dynamic>.from(child.value as Map));
+      final review = Review.fromMap(
+        Map<String, dynamic>.from(child.value as Map),
+      );
       if (review.userId == userId) return true;
     }
     return false;
