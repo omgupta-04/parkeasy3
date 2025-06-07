@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:parkeasy2/providers/slot_provider.dart';
 import 'package:provider/provider.dart';
-import '../../providers/slot_provider.dart';
 
 class SlotAnalyticsScreen extends StatefulWidget {
   const SlotAnalyticsScreen({super.key});
