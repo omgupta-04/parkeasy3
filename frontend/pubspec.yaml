@@ -58,6 +58,11 @@ dependencies:
   fl_chart:
   path: ^1.9.1
   firebase_storage: ^12.4.6
+  google_fonts:
+  flutter_3d_controller:
+  o3d:
+  shimmer: ^3.0.0
+  flutter_animate: ^4.5.2
 
 dev_dependencies:
   flutter_test:
@@ -88,6 +93,7 @@ flutter:
     - assets/images/profile_default.jpg
     - assets/images/dummylot.jpg
     - assets/images/blank_dp.png
+    - assets/xxx/Untitled.glb
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

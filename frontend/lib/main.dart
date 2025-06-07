@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:parkeasy2/screens/map_screen.dart';
+import 'package:parkeasy2/screens/splash_screen.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'screens/auth_screen.dart';
 import 'screens/home_screen.dart';
@@ -19,7 +20,7 @@ void main() async {
   }
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  runApp(ShowCaseWidget(builder: (context) => MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
       home: const AuthGate(),
+      // home: SplashScreen(),
     );
   }
 }
